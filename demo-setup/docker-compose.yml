@@ -1,0 +1,38 @@
+version: "3"
+services:
+  web:
+    image: sreeramb93/demo-server:latest
+    build: server
+    networks:
+      - overlay
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./server:/app # modified here to take into account the new app path
+    depends_on:
+      - cache
+      - db
+    links:
+      - cache
+      - db
+  cache:
+    image: redis
+    networks:
+      - overlay
+  db:
+    image: mysql
+    networks:
+      - overlay
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: demo
+      MYSQL_USER: sreeram
+      MYSQL_PASSWORD: adelaide7092
+    volumes:
+      - db-data:/var/lib/mysql/
+
+volumes:
+  db-data:
+
+networks:
+  overlay:
