@@ -1,17 +1,15 @@
-version: "3"
+version: "3.8"
 services:
   web:
     image: sreeramb93/demo-server:${GITCOMMIT}
-    container_name: demo-server
     build:
       context: ./server
       dockerfile: Dockerfile.new
       args:
         - "GITCOMMIT=${GITCOMMIT}"
     networks:
-      - overlay
-    ports:
-      - "8081:8081"
+      overlay:
+        ipv4_address: ${DEMO_SERVER_IP}
     volumes:
       - ./server:/app # modified here to take into account the new app path
     depends_on:
@@ -35,9 +33,32 @@ services:
       MYSQL_PASSWORD: adelaide7092
     volumes:
       - db-data:/var/lib/mysql/
+  haproxy:
+    image: sreeramb93/ha-proxy:2.2.4
+    build:
+      context: ./haproxy
+      dockerfile: Dockerfile
+    networks:
+      overlay:
+        ipv4_address: ${HA_PROXY_IP}
+    ports:
+      - "8081:8081"
+      - "9090:9090"
+    environment:
+      - DEMO_SERVER_IP=${DEMO_SERVER_IP}
+      - DEMO_SERVER_PORT=${DEMO_SERVER_PORT}
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    depends_on:
+      - web
 
 volumes:
   db-data:
 
 networks:
   overlay:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${NETWORK_SUBNET}
