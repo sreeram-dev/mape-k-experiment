@@ -44,6 +44,7 @@ services:
     ports:
       - "8081:8081"
       - "9090:9090"
+      - "9999:9999"
     environment:
       - DEMO_SERVER_IP=${DEMO_SERVER_IP}
       - DEMO_SERVER_PORT=${DEMO_SERVER_PORT}
