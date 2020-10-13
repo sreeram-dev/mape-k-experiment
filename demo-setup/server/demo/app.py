@@ -6,6 +6,7 @@ import json
 
 api = application = falcon.API()
 
+
 class LivelinessResource(object):
 
     def on_get(self, req, res):
@@ -13,7 +14,7 @@ class LivelinessResource(object):
         """
         payload = {
             'success': True,
-            'message': 'Ready to accept requests'
+            'message': 'Image is live'
         }
 
         res.body = json.dumps(payload)
@@ -27,7 +28,7 @@ class ReadyResource(object):
         """
         payload = {
             'success': True,
-            'message': 'Image is live'
+            'message': 'Ready to accept requests'
         }
 
         res.body = json.dumps(payload)
@@ -47,7 +48,7 @@ class IndexResource(object):
         res.body = json.dumps(payload)
         res.status = falcon.HTTP_200
 
-api.add_route("/health-check", LivelinessResource())
+
+#api.add_route("/live-check", LivelinessResource())
 api.add_route("/ready-check", ReadyResource())
 api.add_route('/', IndexResource())
-

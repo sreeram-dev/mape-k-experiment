@@ -1,8 +1,13 @@
 version: "3"
 services:
   web:
-    image: sreeramb93/demo-server:latest
-    build: server
+    image: sreeramb93/demo-server:${GITCOMMIT}
+    container_name: demo-server
+    build:
+      context: ./server
+      dockerfile: Dockerfile.new
+      args:
+        - "GITCOMMIT=${GITCOMMIT}"
     networks:
       - overlay
     ports:
