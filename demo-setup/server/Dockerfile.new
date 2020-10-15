@@ -22,6 +22,9 @@ WORKDIR $APP_HOME
 
 RUN pip install -r requirements.txt
 
+# Extend the python path
+RUN export PYTHONPATH=$PYTHONPATH:$APP_HOME
+
 COPY ./ $APP_HOME
 
 #ENTRYPOINT ["sh", "/app/entrypoint.sh"]

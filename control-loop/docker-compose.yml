@@ -1,5 +1,98 @@
-version: "3"
+version: "3.8"
+services:
+  prometheus:
+    image: 'prom/prometheus:latest'
+    networks:
+      - overlay
+      - mape-k
+    ports:
+      - '9090:9090'
+    command: --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    links:
+      - cadvisor
+  promtail:
+    image: 'grafana/promtail:latest'
+    networks:
+      - overlay
+      - mape-k
+    ports:
+      - '9080:9080'
+    command: -config.file=/etc/promtail/promtail.yml
+    volumes:
+      - /var/log:/var/log
+      - ./loki/promtail_config.yml:/etc/promtail/promtail.yml
+  loki:
+    image: 'grafana/loki:latest'
+    ports:
+      - '3100:3100'
+    command: -config.file=/etc/loki/loki.yml
+    volumes:
+      - ./loki/loki_config.yml:/etc/loki/loki.yml
+      - prometheus_data:/prometheus
+    networks:
+      mape-k:
+      overlay:
+          ipv4_address: ${LOKI_SERVER_IP}
+    depends_on:
+      - promtail
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - loki
+      - promtail
+      - prometheus
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+    networks:
+      - mape-k
+  cadvisor:
+    image: 'google/cadvisor:latest'
+    container_name: cadvisor
+    ports:
+      - '8080:9095'
+    networks:
+      - overlay
+      - mape-k
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk:/dev/disk/:ro
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      - BADGER_EPHEMERAL=false
+      - BADGER_DIRECTORY_VALUE=/badger/data
+      - BADGER_DIRECTORY_KEY=/badger/key
+      - SPAN_STORAGE_TYPE=badger
+    volumes:
+      - badger_data:/badget
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "9411:9411"
+    networks:
+      - mape-k
+      - overlay
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+  badger_data: {}
 
 networks:
+  mape-k:
+    driver: bridge
   overlay:
-    external: true
+    external:
+      name: demo-server_overlay

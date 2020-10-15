@@ -1,4 +1,10 @@
 version: "3.8"
+x-logging: &lokilogs
+  logging:
+    driver: loki
+    options:
+      loki-url: "http://192.168.0.40:3100/loki/api/v1/push"
+
 services:
   web:
     image: sreeramb93/demo-server:${GITCOMMIT}
@@ -10,6 +16,13 @@ services:
     networks:
       overlay:
         ipv4_address: ${DEMO_SERVER_IP}
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://192.168.0.40:3100/loki/api/v1/push"
+        loki-pipeline-stages: |
+          - drop:
+              expression: ".*haproxy-check.*"
     volumes:
       - ./server:/app # modified here to take into account the new app path
     depends_on:
@@ -43,7 +56,6 @@ services:
         ipv4_address: ${HA_PROXY_IP}
     ports:
       - "8081:8081"
-      - "9090:9090"
       - "9999:9999"
     environment:
       - DEMO_SERVER_IP=${DEMO_SERVER_IP}
