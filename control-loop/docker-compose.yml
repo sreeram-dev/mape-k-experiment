@@ -7,11 +7,26 @@ services:
       - mape-k
     ports:
       - '9090:9090'
-    command: --config.file=/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+        #      - '--storage.tsdb.path=/data'
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+        #      - prometheus_data:/data
     links:
       - cadvisor
+  alertmanager:
+      image: prom/alertmanager
+      volumes:
+        - ./prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+          #- alertmanager_data:/data
+      networks:
+        - mape-k
+      command:
+        - '--config.file=/etc/alertmanager/alertmanager.yml'
+          #- '--storage.path=/data'
+      ports:
+        - '9093:9093'
   promtail:
     image: 'grafana/promtail:latest'
     networks:
@@ -30,7 +45,6 @@ services:
     command: -config.file=/etc/loki/loki.yml
     volumes:
       - ./loki/loki_config.yml:/etc/loki/loki.yml
-      - prometheus_data:/prometheus
     networks:
       mape-k:
       overlay:
@@ -87,6 +101,7 @@ services:
 
 volumes:
   prometheus_data: {}
+  alertmanager_data: {}
   grafana_data: {}
   badger_data: {}
 
