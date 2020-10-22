@@ -47,6 +47,8 @@ class ReadyResource(object):
             'message': 'Ready to accept requests'
         }
 
+        logger.info("Ready check has been successful")
+
         res.body = json.dumps(payload)
         res.status = falcon.HTTP_200
 
