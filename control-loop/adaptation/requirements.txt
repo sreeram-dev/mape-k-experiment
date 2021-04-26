@@ -1,0 +1,5 @@
+Flask==1.1.2
+uwsgi==2.0.19.1
+Flask-SQLAlchemy==2.5.1
+flask-script==2.0.6
+jsonformatter==0.3.0
