@@ -2,8 +2,6 @@
 
 set -e
 
-echo "HELLO WORLD"
-
 touch /app/server.log
 
 haproxy -f /app/haproxy.cfg

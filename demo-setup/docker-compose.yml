@@ -18,8 +18,18 @@ services:
         ipv4_address: ${DEMO_SERVER_IP}
     volumes:
       - ./server:/app # modified here to take into account the new app path
+  consul-server:
+    image: consul:1.9.3
+    volumes:
+      - ./consul/server_config.json:/consul/config/server.json:ro
+      - ./consul/certs/:/consul/config/certs/:ro
+    ports:
+      - '8500:8500'
+      - '8600:8600/tcp'
+      - '8600:8600/udp'
+    command: 'agent -bootstrap-expect=1'
   haproxy:
-    image: sreeramb93/ha-proxy:2.2.4
+    image: sreeramb93/ha-proxy:2.3
     build:
       context: ./haproxy
       dockerfile: Dockerfile
@@ -36,9 +46,6 @@ services:
       - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
     depends_on:
       - web
-
-volumes:
-  db-data:
 
 networks:
   overlay:

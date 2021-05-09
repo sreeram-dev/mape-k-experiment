@@ -4,11 +4,11 @@ RUN apt update
 
 RUN apt install -y wget software-properties-common
 
-RUN wget https://github.com/haproxytech/dataplaneapi/releases/download/v2.1.0/dataplaneapi_2.1.0_Linux_x86_64.tar.gz -O /opt/dataplane.tar.gz
+RUN wget https://github.com/haproxytech/dataplaneapi/releases/download/v2.2.1/dataplaneapi_2.2.1_Linux_x86_64.tar.gz -O /opt/dataplane.tar.gz
 
 RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64
 
-RUN add-apt-repository ppa:vbernat/haproxy-2.2 --yes && apt-get update && apt install -y haproxy
+RUN add-apt-repository ppa:vbernat/haproxy-2.3 --yes && apt-get update && apt install -y haproxy
 
 RUN tar xvzf /opt/dataplane.tar.gz -C /opt
 
