@@ -11,25 +11,20 @@ RUN echo ${GITCOMMIT} > /tmp/git-commit.txt
 # create a new group app
 RUN useradd -ms /bin/bash app
 
-RUN apt-get update && apt-get install -qq -y supervisor
 
 ENV APP_HOME=/app
 
 # copying the requirements.txt to leverage docker cache
 COPY ./requirements.txt /app/requirements.txt
 
-COPY nginx-app.conf /etc/nginx/sites-available/default
-
-COPY supervisor-app.conf /etc/supervisor/conf.d/
-
 COPY uwsgi.ini uwsgi_params requirements.txt /app/
 
 COPY ./ $APP_HOME
+
+ENV UWSGI_INI /app/uwsgi.ini
 
 WORKDIR $APP_HOME
 
 RUN chown -R app:app $APP_HOME
 
 RUN pip install -r requirements.txt
-
-ENTRYPOINT ["/bin/bash", "/app/entrypoint.sh"]

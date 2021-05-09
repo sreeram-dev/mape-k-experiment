@@ -92,7 +92,7 @@ services:
     networks:
       - mape-k
     ports:
-      - '8091:8081'
+      - '8091:80'
     volumes:
       - ./adaptation:/app
       - ./adaptation/static:/app/static
