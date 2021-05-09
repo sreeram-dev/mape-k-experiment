@@ -39,7 +39,6 @@ services:
     image: mysql
     networks:
       - overlay
-    command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: demo
