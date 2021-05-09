@@ -1,4 +1,4 @@
-FROM tiangolo/uwsgi-nginx:python3.8
+FROM python:3.8.5-buster
 
 MAINTAINER Sree Ram Boyapati "sreeram.boyapati2011@gmail.com"
 
@@ -11,25 +11,24 @@ RUN echo ${GITCOMMIT} > /tmp/git-commit.txt
 # create a new group app
 RUN useradd -ms /bin/bash app
 
-RUN apt-get update && apt-get install -qq -y supervisor
-
-ENV APP_HOME=/app
-
 # copying the requirements.txt to leverage docker cache
 COPY ./requirements.txt /app/requirements.txt
 
-COPY nginx-app.conf /etc/nginx/sites-available/default
-
-COPY supervisor-app.conf /etc/supervisor/conf.d/
-
-COPY uwsgi.ini uwsgi_params requirements.txt /app/
-
-COPY ./ $APP_HOME
+ENV APP_HOME=/app
 
 WORKDIR $APP_HOME
 
-RUN chown -R app:app $APP_HOME
-
 RUN pip install -r requirements.txt
 
-ENTRYPOINT ["/bin/bash", "/app/entrypoint.sh"]
+COPY ./ $APP_HOME
+
+RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64
+
+RUN chmod +x /usr/local/bin/dumb-init
+
+RUN chown -R app:app $APP_HOME
+USER app
+
+ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
+
+CMD ["/bin/bash", "/app/entrypoint.sh"]

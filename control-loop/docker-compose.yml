@@ -88,12 +88,15 @@ services:
     environment:
       ADAPTATION_DB_HOST: adaptation_db
       ADAPTATION_DB_PORT: 3309
+      DEBUG_TRUE: "TRUE"
     networks:
       - mape-k
     ports:
       - '8091:8081'
     volumes:
       - ./adaptation:/app
+      - ./adaptation/static:/app/static
+      - adb_logs_data:/var/logs
     depends_on:
       - adaptation_db
     links:
@@ -118,6 +121,7 @@ volumes:
   grafana_data: {}
   badger_data: {}
   adb_data: {}
+  adb_logs_data: {}
 
 networks:
   mape-k:
