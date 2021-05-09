@@ -2,7 +2,7 @@ FROM tiangolo/uwsgi-nginx:python3.8
 
 MAINTAINER Sree Ram Boyapati "sreeram.boyapati2011@gmail.com"
 
-LABEL demo-server="latest"
+LABEL adaptation-server="latest"
 
 ARG GITCOMMIT=0
 

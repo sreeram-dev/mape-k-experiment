@@ -78,50 +78,32 @@ services:
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk:/dev/disk/:ro
-  adaptation:
-    image: sreeramb93/adaptation-server:${GITCOMMIT}
-    build:
-      context: ./adaptation
-      dockerfile: Dockerfile
-      args:
-        - "GITCOMMIT=${GITCOMMIT}"
+  jaeger:
+    image: jaegertracing/all-in-one:latest
     environment:
-      ADAPTATION_DB_HOST: adaptation_db
-      ADAPTATION_DB_PORT: 3309
-      DEBUG_TRUE: "TRUE"
-    networks:
-      - mape-k
+      - BADGER_EPHEMERAL=false
+      - BADGER_DIRECTORY_VALUE=/badger/data
+      - BADGER_DIRECTORY_KEY=/badger/key
+      - SPAN_STORAGE_TYPE=badger
+    volumes:
+      - badger_data:/badget
     ports:
-      - '8091:80'
-    volumes:
-      - ./adaptation:/app
-      - ./adaptation/static:/app/static
-      - ./adaptation/migrations:/app/migrations
-    depends_on:
-      - adaptation_db
-    links:
-      - adaptation_db
-  adaptation_db:
-    image: mysql
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "9411:9411"
     networks:
       - mape-k
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: adaptation
-      MYSQL_USER: sreeram
-      MYSQL_PASSWORD: adelaide7093
-      MYSQL_TCP_PORT: 3309
-    volumes:
-      - adb_data:/var/lib/mysql/
+      - overlay
 
 volumes:
   prometheus_data: {}
   alertmanager_data: {}
   grafana_data: {}
   badger_data: {}
-  adb_data: {}
-  adb_logs_data: {}
 
 networks:
   mape-k:
