@@ -96,7 +96,7 @@ services:
     volumes:
       - ./adaptation:/app
       - ./adaptation/static:/app/static
-      - adb_logs_data:/var/logs
+      - ./adaptation/migrations:/app/migrations
     depends_on:
       - adaptation_db
     links:

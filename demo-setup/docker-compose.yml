@@ -10,43 +10,14 @@ services:
     image: sreeramb93/demo-server:${GITCOMMIT}
     build:
       context: ./server
-      dockerfile: Dockerfile.new
+      dockerfile: Dockerfile
       args:
         - "GITCOMMIT=${GITCOMMIT}"
     networks:
       overlay:
         ipv4_address: ${DEMO_SERVER_IP}
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://192.168.0.40:3100/loki/api/v1/push"
-        loki-pipeline-stages: |
-          - drop:
-              expression: ".*haproxy-check.*"
     volumes:
       - ./server:/app # modified here to take into account the new app path
-    depends_on:
-      - cache
-      - db
-    links:
-      - cache
-      - db
-  cache:
-    image: redis
-    networks:
-      - overlay
-  db:
-    image: mysql
-    networks:
-      - overlay
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: demo
-      MYSQL_USER: sreeram
-      MYSQL_PASSWORD: adelaide7092
-    volumes:
-      - db-data:/var/lib/mysql/
   haproxy:
     image: sreeramb93/ha-proxy:2.2.4
     build:
