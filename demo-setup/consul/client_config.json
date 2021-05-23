@@ -1,7 +1,7 @@
 {
   "node_name": "consul-client",
   "data_dir": "/consul/data",
-  "retry_join": ["demo-server_consul-server_1"],
+  "retry_join": ["consul-server"],
   "encrypt": "aPuGh+5UDskRAbkLaXRzFoSOcSM+5vAK+NEYOWHJH7w=",
   "verify_incoming": false,
   "verify_outgoing": false,

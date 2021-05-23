@@ -11,11 +11,16 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
+      labels:
+        - SERVICE_80_CHECK_HTTP=/ready-check
+        - SERVICE_80_CHECK_INTERVAL=15s
+        - SERVICE_80_CHECK_TIMEOUT=1s
+        - SERVICE_80_TAGS=demo-server
+        - SERVICE_80_NAME=demo
       args:
         - "GITCOMMIT=${GITCOMMIT}"
     networks:
-      overlay:
-        ipv4_address: ${DEMO_SERVER_IP}
+      - overlay
     volumes:
       - ./server:/app # modified here to take into account the new app path
   consul-server:
@@ -31,17 +36,22 @@ services:
       - '8500:8500'
       - '8600:8600/tcp'
       - '8600:8600/udp'
-    command: 'agent -bootstrap-expect=1'
-  consul-agent:
-    image: consul:1.9.5
-    command: 'agent'
+    command: 'agent -server -ui -client=0.0.0.0 -bootstrap-expect=1'
+  registrator:
+    container_name: registrator
+    image: gliderlabs/registrator:master
     volumes:
-      - ./consul/client_config.json:/consul/config/client.json:ro
-      - ./consul/certs/:/consul/config/certs/:ro
+      - "/var/run/docker.sock:/tmp/docker.sock"
+    command: -internal consul://consul-server:8500
+    restart: always
     networks:
       - overlay
+    links:
+      - consul-server
+    depends_on:
+      - consul-server
   haproxy:
-    image: sreeramb93/ha-proxy:2.3
+    image: sreeramb93/ha-proxy:2.4
     build:
       context: ./haproxy
       dockerfile: Dockerfile
@@ -51,13 +61,14 @@ services:
     ports:
       - "8081:8081"
       - "9999:9999"
-    environment:
-      - DEMO_SERVER_IP=${DEMO_SERVER_IP}
-      - DEMO_SERVER_PORT=${DEMO_SERVER_PORT}
+      - "8404:8404"
     volumes:
       - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
     depends_on:
       - web
+      - consul-server
+    links:
+      - consul-server
 
 volumes:
   consul_data: {}
