@@ -1,0 +1,21 @@
+name: demo_server
+dataplaneapi:
+  host: 0.0.0.0
+  port: 9999
+  user:
+  - name: dataplaneapi
+    insecure: true
+    password: dataplane
+  resources:
+    maps_dir: /etc/haproxy/maps
+    ssl_certs_dir: /etc/haproxy/ssl
+    spoe_dir: /etc/haproxy/spoe
+  transaction:
+    transaction_dir: /tmp/haproxy
+haproxy:
+  config_file: /etc/haproxy/haproxy.cfg
+  haproxy_bin: /usr/sbin/haproxy
+  reload:
+    reload_cmd: service haproxy reload
+    restart_cmd: service haproxy restart
+    reload_delay: 5

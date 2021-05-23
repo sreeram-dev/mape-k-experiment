@@ -4,7 +4,7 @@ set -e
 
 touch /app/server.log
 
-haproxy -f /app/haproxy.cfg
+service haproxy start
 
 tail -f /app/server.log
 

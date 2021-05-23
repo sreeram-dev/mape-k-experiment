@@ -16,6 +16,10 @@ RUN chmod +x /opt/build/dataplaneapi
 
 RUN cp /opt/build/dataplaneapi /usr/local/bin/dataplaneapi
 
+COPY ./dataplaneapi.yaml /etc/haproxy/dataplaneapi.yaml
+
+COPY ./haproxy.cfg /etc/haproxy/haproxy.cfg
+
 RUN chmod +x /usr/local/bin/dumb-init
 
 ENV APP_HOME=/app
