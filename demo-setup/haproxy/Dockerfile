@@ -20,6 +20,8 @@ COPY ./dataplaneapi.yaml /etc/haproxy/dataplaneapi.yaml
 
 COPY ./haproxy.cfg /etc/haproxy/haproxy.cfg
 
+COPY ./ratelimit.map /etc/haproxy/maps/
+
 RUN chmod +x /usr/local/bin/dumb-init
 
 ENV APP_HOME=/app
