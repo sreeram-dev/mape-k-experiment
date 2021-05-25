@@ -8,10 +8,12 @@ services:
     ports:
       - '9090:9090'
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--web.external-url=http://localhost:9090"
         #      - '--storage.tsdb.path=/data'
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/rules.yml:/etc/prometheus/rules.yml
         #      - prometheus_data:/data
     links:
       - cadvisor
@@ -23,7 +25,8 @@ services:
       networks:
         - mape-k
       command:
-        - '--config.file=/etc/alertmanager/alertmanager.yml'
+        - "--config.file=/etc/alertmanager/alertmanager.yml"
+        - "--web.external-url=http://localhost:9093"
           #- '--storage.path=/data'
       ports:
         - '9093:9093'

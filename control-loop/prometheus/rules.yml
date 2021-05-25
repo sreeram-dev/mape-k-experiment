@@ -1,0 +1,27 @@
+groups:
+- name: HaProxy
+  rules:
+    - alert: Low number of instances
+      expr: haproxy_backend_active_servers{proxy="webservers"} == 1
+      for: 10s
+      labels:
+        severity: critical
+      annotations:
+        summary: "Low number of backend instances"
+        description: "Low number of webservers detected, please adjust ratelimits"
+    - alert: High number of instances
+      expr: haproxy_backend_active_servers{proxy="webservers"} > 4
+      for: 10s
+      labels:
+        severity: warning
+      annotations:
+        summary: "High number of backend webservers"
+        description: "High numebr of webservers detected, please adjust ratelimits"
+    - alert: Optimal number of instances
+      expr: haproxy_backend_active_servers{proxy="webservers"} > 2 and haproxy_backend_active_servers{proxy="webservers"} < 4
+      for: 10s
+      labels:
+        severity: critical
+      annotations:
+        summary: "Optimal number of backend web servers"
+        description: "Optimal number of webservers detected, Please adjust rate limits"

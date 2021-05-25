@@ -4,7 +4,8 @@ global:
   scrape_timeout: 1s
 
 rule_files:
-- '/etc/prometeus/alert.rules'
+- '/etc/prometheus/rules.yml'
+
 alerting:
   alertmanagers:
   - static_configs:
