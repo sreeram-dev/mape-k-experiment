@@ -82,12 +82,10 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk:/dev/disk/:ro
   adaptation:
-    image: sreeramb93/adaptation-server:${GITCOMMIT}
+    image: sreeramb93/adaptation-server
     build:
       context: ./adaptation
       dockerfile: Dockerfile
-      args:
-        - "GITCOMMIT=${GITCOMMIT}"
     environment:
       ADAPTATION_DB_HOST: adaptation_db
       ADAPTATION_DB_PORT: 3309

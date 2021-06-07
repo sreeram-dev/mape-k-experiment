@@ -62,5 +62,5 @@ inhibit_rules:
 receivers:
   - name: 'adaptation-framework'
     webhook_configs:
-      - url: 'http://adaptation:80/notify-adaptation-framework'
+      - url: 'http://adaptation:8092/notify-adaptation-framework'
         send_resolved: true

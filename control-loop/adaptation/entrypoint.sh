@@ -2,6 +2,6 @@
 
 set -e
 
-supervisord -n -c /etc/supervisor/conf.d/supervisor-app.conf
+#supervisord -n -c /etc/supervisor/conf.d/supervisor-app.conf
 
 exec "$@"

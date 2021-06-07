@@ -29,7 +29,7 @@ if os.environ.get('DEBUG_TRUE', 'FALSE') == 'TRUE':
 else:
     DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'localhost', 'adaptation']
 
 
 # Application definition
@@ -120,6 +120,11 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+
+## Disable CSRF
+#CSRF_COOKIE_SECURE = False
+#CSRF_COOKIE_HTTPONLY = False
 
 
 # Static files (CSS, JavaScript, Images)
