@@ -18,7 +18,7 @@ groups:
         alertvalue: "{{ $value }}"
       annotations:
         summary: "High number of backend webservers"
-        description: "High numebr of webservers detected, please adjust ratelimits"
+        description: "High number of webservers detected, please adjust ratelimits"
     - alert: optimal_instances
       expr: haproxy_backend_active_servers{proxy="webservers"} >= 2 and haproxy_backend_active_servers{proxy="webservers"} < 4
       for: 10s
