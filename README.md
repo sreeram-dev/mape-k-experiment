@@ -17,3 +17,9 @@ MAPE-K loop on HA Proxy and Microservice
 
 ## PostMan Collection
 https://www.getpostman.com/collections/cda89aba1d4e1d17ac5a
+
+
+## StressTesting
+
+* Run `pip install locust`
+* Run `locust`

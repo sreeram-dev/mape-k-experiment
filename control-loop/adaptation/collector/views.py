@@ -45,6 +45,7 @@ class AlertCollectionView(View):
 
 
         payload = json.loads(request.body)
+        print(json.dumps(payload))
         for alert in payload['alerts']:
             AdaptationManager.process_alert(alert)
 

@@ -28,7 +28,7 @@ class DecreaseRateLimit(BaseRule):
         return self.rule.matches(params)
 
     def perform_action(self, payload={}):
-        self.action_provider.replace_entry_to_map("ratelimit.map", "rate_limit", 4)
+        self.action_provider.replace_entry_to_map("ratelimit.map", "rate_limit", 500)
 
     def get_context(self):
         return self.context
@@ -51,7 +51,7 @@ class IncreaseRateLimit(BaseRule):
         return self.rule.matches(params)
 
     def perform_action(self, alert_job, payload={}):
-        self.action_provider.replace_entry_to_map("ratelimit.map", "rate_limit", 15)
+        self.action_provider.replace_entry_to_map("ratelimit.map", "rate_limit", 2000)
 
     def get_context(self):
         return self.context
@@ -74,7 +74,7 @@ class AdjustRateLimit(BaseRule):
         return self.rule.matches(params)
 
     def perform_action(self, alert_job, payload={}):
-        self.action_provider.replace_entry_to_map("ratelimit.map", "rate_limit", 10)
+        self.action_provider.replace_entry_to_map("ratelimit.map", "rate_limit", 1000)
 
     def get_context(self):
         return self.context

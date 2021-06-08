@@ -7,8 +7,6 @@ class AlertManagerContext:
         self.__populate_common_fields(alert)
 
     def __populate_common_fields(self, alert):
-        """
-        """
         self.fingerprint = alert['fingerprint']
         self.start_time = alert['startsAt']
         self.end_time = alert['endsAt']
@@ -17,7 +15,6 @@ class AlertManagerContext:
         alert_name = alert['labels']['alertname']
         self.alert_job = f"{alert_name}_{job_source}"
         self.alert_value = alert['labels']['alertvalue']
-
 
     def get_fingerprint(self):
         """Get the unique fingerprint of the alert

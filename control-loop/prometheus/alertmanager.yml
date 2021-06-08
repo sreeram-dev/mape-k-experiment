@@ -16,7 +16,7 @@ route:
   # alerts as-is. This is unlikely to be what you want, unless you have
   # a very low alert volume or your upstream notification system performs
   # its own grouping. Example: group_by: [...]
-  group_by: ['alertname']
+  group_by: ['alertname', 'cluster']
 
   # When a new group of alerts is created by an incoming alert, wait at
   # least 'group_wait' to send the initial notification.
@@ -27,7 +27,7 @@ route:
 
   # When the first notification was sent, wait 'group_interval' to send a batch
   # of new alerts that started firing for that group.
-  group_interval: 20m
+  group_interval: 1s
 
   # If an alert has successfully been sent, wait 'repeat_interval' to
   # resend them.
