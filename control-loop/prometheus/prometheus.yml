@@ -20,7 +20,7 @@ scrape_configs:
         alias: 'prometheus'
   - job_name: 'haproxy'
     static_configs:
-    - targets: ['192.168.0.33:8404']
+    - targets: ['haproxy:8404']
       labels:
         alias: 'haproxy'
   - job_name: 'cadvisor'

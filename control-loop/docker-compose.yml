@@ -89,9 +89,12 @@ services:
     environment:
       ADAPTATION_DB_HOST: adaptation_db
       ADAPTATION_DB_PORT: 3309
+      DATAPLANE_API_USERNAME: ${DATAPLANE_API_USERNAME}
+      DATAPLANE_API_PASSWORD: ${DATAPLANE_API_PASSWORD}
       DEBUG_TRUE: "TRUE"
     networks:
       - mape-k
+      - overlay
     ports:
       - '8091:80'
     volumes:
