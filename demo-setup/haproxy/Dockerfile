@@ -4,7 +4,7 @@ RUN apt update
 
 RUN apt install -y wget software-properties-common
 
-RUN wget https://github.com/haproxytech/dataplaneapi/releases/download/v2.3.1/dataplaneapi_2.3.1_Linux_x86_64.tar.gz -O /opt/dataplane.tar.gz
+RUN wget https://github.com/haproxytech/dataplaneapi/releases/download/v2.3.2/dataplaneapi_2.3.2_Linux_x86_64.tar.gz -O /opt/dataplane.tar.gz
 
 RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64
 
