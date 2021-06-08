@@ -2,15 +2,15 @@
 from context.dto.context import InstanceCountContext
 
 HAPROXY_LOW_INSTANCES = 'low_instances_haproxy'
-MEDIUM_NUMBER_INSTANCES = 'medium_instances_haproxy'
+HAPROXY_OPTIMAL_INSTANCES = 'optimal_instances_haproxy'
 HAPROXY_HIGH_INSTANCES = 'high_instances_haproxy'
-
 
 """Mapping of alert with their corresponding context
 """
 CONTEXT_REGISTRY = {
     HAPROXY_LOW_INSTANCES: InstanceCountContext,
-    HAPROXY_HIGH_INSTANCES: InstanceCountContext
+    HAPROXY_HIGH_INSTANCES: InstanceCountContext,
+    HAPROXY_OPTIMAL_INSTANCES: InstanceCountContext
 }
 
 
@@ -29,6 +29,6 @@ class ContextRegistry:
         """Alert Name for the context
         """
         if alert_name not in self.data:
-            raise KeyError("Context for the alert is not defined")
+            raise KeyError(f"Context for the alert is not defined: {alert_name}")
 
         return self.data[alert_name]

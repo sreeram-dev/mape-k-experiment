@@ -20,5 +20,4 @@ class AdaptationManager:
         context_klass = cls.context_registry.get_context_klass_from_registry(alert_job)
         context = context_klass(alert)
         best_rule = cls.rules_manager.get_action_for_context(context)
-        best_rule.perform_action()
-
+        best_rule.perform_action(alert_job)
