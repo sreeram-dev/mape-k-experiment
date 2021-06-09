@@ -2,6 +2,7 @@
 
 
 class BaseRule:
+    name = 'BaseRule'
 
     def get_rule(self):
         raise NotImplementedError
@@ -14,3 +15,6 @@ class BaseRule:
 
     def get_context(self):
         raise NotImplementedError
+
+    def get_name(self):
+        return self.name

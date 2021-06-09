@@ -42,10 +42,8 @@ class AlertCollectionView(View):
             'truncatedAlerts': 0
         }
         """
-
-
         payload = json.loads(request.body)
-        print(json.dumps(payload))
+
         for alert in payload['alerts']:
             AdaptationManager.process_alert(alert)
 

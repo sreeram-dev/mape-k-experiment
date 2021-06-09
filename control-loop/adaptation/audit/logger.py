@@ -6,10 +6,14 @@ class AuditLogger(object):
     """
 
     @classmethod
-    def log_message(cls, alert_name, message):
+    def log_message(cls, message, fingerprint=None):
         """logs the message
             args: :alert_name
             args: :message
         """
-        audit_log = AuditLog(alert_name=alert_name, message=message)
+        if fingerprint:
+            audit_log = AuditLog(alert_fingerprint=fingerprint, message=message)
+        else:
+            audit_log = AuditLog(message=message)
+
         audit_log.save()

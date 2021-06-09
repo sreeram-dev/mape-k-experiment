@@ -12,6 +12,7 @@ from goals.rules.base import BaseRule
 
 class DecreaseRateLimit(BaseRule):
     action_provider = HAProxyProvider()
+    name = 'DecreaseRateLimit'
 
     def __init__(self):
         self.context = rule_engine.Context(type_resolver=rule_engine.type_resolver_from_dict({
@@ -36,6 +37,7 @@ class DecreaseRateLimit(BaseRule):
 
 class IncreaseRateLimit(BaseRule):
     action_provider = HAProxyProvider()
+    name = 'IncreaseRateLimit'
 
     def __init__(self):
         self.context = rule_engine.Context(type_resolver=rule_engine.type_resolver_from_dict({
@@ -59,6 +61,7 @@ class IncreaseRateLimit(BaseRule):
 
 class AdjustRateLimit(BaseRule):
     action_provider = HAProxyProvider()
+    name = 'AdjustRateLimit'
 
     def __init__(self):
         self.context = rule_engine.Context(type_resolver=rule_engine.type_resolver_from_dict({
