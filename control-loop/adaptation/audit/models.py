@@ -4,8 +4,7 @@ from django.db import models
 
 
 class AuditLog(models.Model):
-    alert_name = models.CharField(max_length=250)
-    alert_fingerprint = models.CharField(max_length=150)
-    alert_summary = models.TextField()
+    alert_fingerprint = models.CharField(max_length=150, null=True, blank=True)
+    message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
