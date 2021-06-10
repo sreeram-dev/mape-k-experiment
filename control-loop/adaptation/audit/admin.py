@@ -3,6 +3,9 @@ import datetime
 from django.contrib import admin
 
 # Register your models here.
+import pytz
+from datetime import datetime, timezone
+
 from django.contrib import admin
 from audit.models import AuditLog
 
@@ -16,7 +19,9 @@ class AuditLogAdmin(admin.ModelAdmin):
 
     @admin.display(description='created_at')
     def created_at_milli(self, obj: AuditLog):
-        str_time = obj.created_at.strftime("%d %b %Y %H:%M:%S:%f")
+        local_timezone = pytz.timezone('Australia/Adelaide')
+        str_time = obj.created_at.replace(tzinfo=pytz.utc).astimezone(
+            local_timezone).strftime("%d %b %Y %H:%M:%S:%f")
         return str_time
 
 admin.site.register(AuditLog, AuditLogAdmin)

@@ -40,23 +40,16 @@ route:
 
   # The child route trees.
   routes:
+    - match:
+        group: "rate_limit_alerts"
+      receiver: slack_human_loop
+
 
 
 # Inhibition rules allow to mute a set of alerts given that another alert is
 # firing.
 # We use this to mute any warning-level notifications if the same alert is
 # already critical.
-inhibit_rules:
-- source_match:
-    severity: 'critical'
-  target_match:
-    severity: 'warning'
-  # Apply inhibition if the alertname is the same.
-  # CAUTION:
-  #   If all label names listed in `equal` are missing
-  #   from both the source and target alerts,
-  #   the inhibition rule will apply!
-  equal: ['alertname']
 
 
 receivers:
@@ -65,3 +58,8 @@ receivers:
       - url: 'http://adaptation:80/notify-adaptation-framework'
         send_resolved: true
         max_alerts: 3
+  - name: 'slack_human_loop'
+    slack_configs:
+      - api_url: https://hooks.slack.com/services/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
+        channel: '#self-adaptation'
+        send_resolved: true

@@ -3,7 +3,7 @@ groups:
   rules:
     - alert: low_instances
       expr: haproxy_backend_active_servers{proxy="webservers"} < 2
-      for: 10s
+      for: 5s
       labels:
         severity: warning
         alertvalue: "{{ $value }}"
@@ -13,7 +13,7 @@ groups:
         description: "Low number of webservers detected, please adjust ratelimits"
     - alert: high_instances
       expr: haproxy_backend_active_servers{proxy="webservers"} >= 4
-      for: 10s
+      for: 5s
       labels:
         severity: warning
         alertvalue: "{{ $value }}"
@@ -23,7 +23,7 @@ groups:
         description: "High number of webservers detected, please adjust ratelimits"
     - alert: optimal_instances
       expr: haproxy_backend_active_servers{proxy="webservers"} >= 2 and haproxy_backend_active_servers{proxy="webservers"} < 4
-      for: 10s
+      for: 15s
       labels:
         severity: warning
         alertvalue: "{{ $value }}"
@@ -31,3 +31,16 @@ groups:
       annotations:
         summary: "Optimal number of backend web servers"
         description: "Optimal number of webservers detected, Please adjust rate limits"
+- name: RateLimit Alerts
+  rules:
+    - alert: high_ratelimit_errors
+      expr: sum ( rate(haproxy_frontend_http_responses_total{code="4xx", proxy="http-in"}[10s]) ) / sum ( rate(haproxy_frontend_http_responses_total{code="2xx", proxy="http-in"}[10s])) > 0.50
+      for: 5s
+      labels:
+        severity: critical
+        alertvalue: "{{ $value }}"
+        cluster: haproxy
+        group: "rate_limit_alerts"
+      annotations:
+        summary: "Critical rate of 429 errors observed"
+        description: "High Number of ratelimiting errors. Please increase the number of instances"
