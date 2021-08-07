@@ -1,6 +1,5 @@
 # -*- coding:utf-8 -*-
 
-import time
 from locust import HttpUser, task, between
 
 
