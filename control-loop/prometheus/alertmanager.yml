@@ -42,7 +42,7 @@ route:
   routes:
     - match:
         group: "rate_limit_alerts"
-      receiver: slack_human_loop
+      receiver: discord_human_loop
 
 
 
@@ -58,8 +58,7 @@ receivers:
       - url: 'http://adaptation:80/notify-adaptation-framework'
         send_resolved: true
         max_alerts: 3
-  - name: 'slack_human_loop'
-    slack_configs:
-      - api_url: https://hooks.slack.com/services/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
-        channel: '#self-adaptation'
+  - name: 'discord_human_loop'
+    discord_configs:
+      - webhook_url: insert_discord_webhook_url_here
         send_resolved: true

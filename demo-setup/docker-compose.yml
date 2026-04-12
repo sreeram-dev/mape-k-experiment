@@ -1,29 +1,29 @@
 version: "3.8"
-x-logging: &lokilogs
-  logging:
-    driver: loki
-    options:
-      loki-url: "http://192.168.0.40:3100/loki/api/v1/push"
 
 services:
   web:
+    platform: ${DOCKER_PLATFORM:-linux/arm64/v8}
     image: sreeramb93/demo-server:${GITCOMMIT}
     build:
       context: ./server
       dockerfile: Dockerfile
-      labels:
-        - SERVICE_80_CHECK_HTTP=/ready-check
-        - SERVICE_80_CHECK_INTERVAL=15s
-        - SERVICE_80_CHECK_TIMEOUT=1s
-        - SERVICE_80_TAGS=demo-server
-        - SERVICE_80_NAME=demo
       args:
         - "GITCOMMIT=${GITCOMMIT}"
+    environment:
+      SERVICE_80_CHECK_HTTP: /ready-check
+      SERVICE_80_CHECK_INTERVAL: 15s
+      SERVICE_80_CHECK_TIMEOUT: 1s
+      SERVICE_80_TAGS: demo-server
+      SERVICE_80_NAME: demo
     networks:
       - overlay
+    expose:
+      - "80"
     volumes:
       - ./server:/app # modified here to take into account the new app path
+    stop_grace_period: 3s
   consul-server:
+    platform: ${DOCKER_PLATFORM:-linux/arm64/v8}
     image: consul:1.9.5
     volumes:
       - ./consul/server_config.json:/consul/config/server.json:ro
@@ -38,6 +38,7 @@ services:
     command: 'agent -server -ui -client=0.0.0.0 -bootstrap-expect=1'
   registrator:
     container_name: registrator
+    platform: ${REGISTRATOR_PLATFORM:-linux/amd64}
     image: gliderlabs/registrator:master
     volumes:
       - "/var/run/docker.sock:/tmp/docker.sock"
@@ -50,6 +51,7 @@ services:
     depends_on:
       - consul-server
   haproxy:
+    platform: ${DOCKER_PLATFORM:-linux/arm64/v8}
     image: sreeramb93/ha-proxy:2.4
     build:
       context: ./haproxy
@@ -73,8 +75,9 @@ volumes:
 
 networks:
   overlay:
+    name: ${DEMO_NETWORK_NAME:-demo-server_overlay}
     driver: bridge
     ipam:
       driver: default
       config:
-        - subnet: ${NETWORK_SUBNET}
+        - subnet: ${NETWORK_SUBNET:-172.29.0.0/24}

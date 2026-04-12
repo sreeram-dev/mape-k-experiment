@@ -34,8 +34,13 @@ groups:
 - name: RateLimit Alerts
   rules:
     - alert: high_ratelimit_errors
-      expr: sum ( rate(haproxy_frontend_http_responses_total{code="4xx", proxy="http-in"}[10s]) ) / sum ( rate(haproxy_frontend_http_responses_total{code="2xx", proxy="http-in"}[10s])) > 0.50
-      for: 5s
+      expr: |
+        sum(rate(haproxy_frontend_http_responses_total{code="4xx", proxy="http-in"}[30s]))
+        /
+        clamp_min(sum(rate(haproxy_frontend_http_responses_total{proxy="http-in"}[30s])), 1)
+        > 0.2
+      for: 3s
+      #keep_firing_for: 5m
       labels:
         severity: critical
         alertvalue: "{{ $value }}"

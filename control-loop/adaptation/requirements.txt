@@ -1,5 +1,6 @@
 Django>=3.2.4
 jsonformatter==0.3.0
 mysqlclient==2.0.3
+pytz
 requests==2.25.1
 rule-engine==3.2.0

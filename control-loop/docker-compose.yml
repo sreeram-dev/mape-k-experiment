@@ -1,6 +1,7 @@
 version: "3.8"
 services:
   prometheus:
+    platform: ${DOCKER_PLATFORM:-linux/arm64/v8}
     image: 'prom/prometheus:latest'
     networks:
       - overlay
@@ -18,6 +19,7 @@ services:
     links:
       - cadvisor
   alertmanager:
+      platform: ${DOCKER_PLATFORM:-linux/arm64/v8}
       image: prom/alertmanager
       volumes:
         - ./prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml
@@ -30,18 +32,8 @@ services:
           #- '--storage.path=/data'
       ports:
         - '9093:9093'
-  promtail:
-    image: 'grafana/promtail:latest'
-    networks:
-      - overlay
-      - mape-k
-    ports:
-      - '9080:9080'
-    command: -config.file=/etc/promtail/promtail.yml
-    volumes:
-      - /var/log:/var/log
-      - ./loki/promtail_config.yml:/etc/promtail/promtail.yml
   loki:
+    platform: ${DOCKER_PLATFORM:-linux/arm64/v8}
     image: 'grafana/loki:latest'
     ports:
       - '3100:3100'
@@ -51,16 +43,14 @@ services:
     networks:
       mape-k:
       overlay:
-          ipv4_address: ${LOKI_SERVER_IP}
-    depends_on:
-      - promtail
+          ipv4_address: ${LOKI_SERVER_IP:-172.29.0.10}
   grafana:
+    platform: ${DOCKER_PLATFORM:-linux/arm64/v8}
     image: grafana/grafana:latest
     ports:
       - "3000:3000"
     depends_on:
       - loki
-      - promtail
       - prometheus
     volumes:
       - grafana_data:/var/lib/grafana
@@ -68,10 +58,11 @@ services:
     networks:
       - mape-k
   cadvisor:
+    platform: ${CADVISOR_PLATFORM:-linux/amd64}
     image: 'google/cadvisor:latest'
     container_name: cadvisor
     ports:
-      - '8080:9095'
+      - '8080:8080'
     networks:
       - overlay
       - mape-k
@@ -82,15 +73,17 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk:/dev/disk/:ro
   adaptation:
+    platform: ${DOCKER_PLATFORM:-linux/arm64/v8}
     image: sreeramb93/adaptation-server
     build:
       context: ./adaptation
       dockerfile: Dockerfile
+    command: /bin/sh -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput && /start.sh"
     environment:
       ADAPTATION_DB_HOST: adaptation_db
       ADAPTATION_DB_PORT: 3309
-      DATAPLANE_API_USERNAME: ${DATAPLANE_API_USERNAME}
-      DATAPLANE_API_PASSWORD: ${DATAPLANE_API_PASSWORD}
+      DATAPLANE_API_USERNAME: ${DATAPLANE_API_USERNAME:-dataplaneapi}
+      DATAPLANE_API_PASSWORD: ${DATAPLANE_API_PASSWORD:-dataplane}
       DEBUG_TRUE: "TRUE"
     networks:
       - mape-k
@@ -102,11 +95,13 @@ services:
       - ./adaptation/static:/app/static
       - ./adaptation/migrations:/app/migrations
     depends_on:
-      - adaptation_db
+      adaptation_db:
+        condition: service_healthy
     links:
       - adaptation_db
   adaptation_db:
-    image: mysql
+    platform: ${DOCKER_PLATFORM:-linux/arm64/v8}
+    image: mysql:8.0
     networks:
       - mape-k
     command: --default-authentication-plugin=mysql_native_password
@@ -118,6 +113,11 @@ services:
       MYSQL_TCP_PORT: 3309
     volumes:
       - adb_data:/var/lib/mysql/
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
 volumes:
   prometheus_data: {}
@@ -131,5 +131,5 @@ networks:
   mape-k:
     driver: bridge
   overlay:
-    external:
-      name: demo-server_overlay
+    external: true
+    name: ${DEMO_NETWORK_NAME:-demo-server_overlay}
